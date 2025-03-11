@@ -11,11 +11,6 @@ def Add(desc):
 	tasks[ID] = Task(ID, desc)
 	ID += 1
 
-def Load():
-	global tasks
-	tasks = json.load(data)
-	print(tasks)
-
 def Delete(id):
 	del tasks[id]
 
