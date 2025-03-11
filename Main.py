@@ -1,12 +1,20 @@
-import os.path
+import os.path, json
 from Task import Task
 
 global data
+isActive = True
 ID = 1
 tasks = {}
 
 def Add(desc):
-	tasks[ID] = Task(desc, "todo")
+	global ID
+	tasks[ID] = Task(ID, desc)
+	ID += 1
+
+def Load():
+	global tasks
+	tasks = json.load(data)
+	print(tasks)
 
 def Delete(id):
 	del tasks[id]
@@ -26,6 +34,7 @@ def mark(id, status):
 	tasks[id].status = status
 
 def menu():
+	global isActive
 	inp = input("Enter your command: ")
 	if inp.__contains__("\""): com = list(inp[:inp.index("\"")].split(" "))
 	else: com = list(inp.split(" "))
@@ -59,14 +68,19 @@ def menu():
 				return
 			case "mark-done":
 				mark(int(com[2]), "done")
-				return
+			case "exit":
+				isActive = False
 
 def main():
 	global data
-	if os.path.isfile("data.json"): data = open("data.json", "a")
+	if os.path.isfile("data.json"):
+		# data = open("data.json", "r")
+		# Load()
+		data = open("data.json", "a")
 	else: data = open("data.json", "w")
-	while True:
+	while isActive:
 		menu()
+	json.dump({k: v.__str__() for (k, v) in tasks.items()}, data, indent=2)
 
 if __name__ == "__main__":
 	main()
