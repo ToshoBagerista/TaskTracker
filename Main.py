@@ -1,4 +1,6 @@
-import os.path, json
+import os, json
+import time
+
 from Task import Task
 
 global data
@@ -10,6 +12,20 @@ def Add(desc):
 	global ID
 	tasks[ID] = Task(ID, desc)
 	ID += 1
+
+def Load():
+	global data, ID, tasks
+	try:
+		loadtasks = json.load(data)
+		# print(loadtasks)
+		for task in loadtasks.values():
+			tasks[ID] = Task(ID, task['description'], status=task['status'], createdAt=task['createdAt'], updatedAt=task['updatedAt'])
+			ID += 1
+		# time.sleep(0.1)
+	except ValueError:
+		pass
+	data.close()
+	os.remove("data.json")
 
 def Delete(id):
 	del tasks[id]
@@ -23,7 +39,7 @@ def listtasks(tag):
 		return
 	for task in tasks.values():
 		if task.status == tag: print(f"{task.description} - {task.status}")
-		return
+	return
 
 def mark(id, status):
 	tasks[id].status = status
@@ -69,13 +85,12 @@ def menu():
 def main():
 	global data
 	if os.path.isfile("data.json"):
-		# data = open("data.json", "r")
-		# Load()
-		data = open("data.json", "a")
-	else: data = open("data.json", "w")
+		data = open("data.json", "r")
+		Load()
+	data = open("data.json", "w")
 	while isActive:
 		menu()
-	json.dump({k: v.__str__() for (k, v) in tasks.items()}, data, indent=2)
+	json.dump({int(k): v.__str__() for (k, v) in tasks.items()}, data, indent=2)
 
 if __name__ == "__main__":
 	main()
