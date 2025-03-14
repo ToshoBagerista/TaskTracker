@@ -1,2 +1,2 @@
 To open the app just run the Main.py
-Project pae: https://roadmap.sh/projects/task-tracker
+Project page: https://roadmap.sh/projects/task-tracker
